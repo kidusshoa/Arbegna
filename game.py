@@ -8,7 +8,7 @@ screen = pygame.display.set_mode((w_width,w_height))
 pygame.display.set_caption("Arbegna")
 
 clock = pygame.time.Clock()
-bg_img = pygame.image.load("../basic/img/bg.png")
+bg_img = pygame.image.load("./images/image 5.png")
 bg_img = pygame.transform.scale(bg_img, (w_width, w_height))
 walkRight = [pygame.image.load(f'soldier/{i}.png') for i in range(1,10)]
 walkLeft = [pygame.image.load(f'soldier/L{i}.png') for i in range(1,10)]
@@ -22,7 +22,7 @@ hitsound = pygame.mixer.Sound("sounds/hit_local.mp3")
 hurtsound = pygame.mixer.Sound("sounds/oyne.mp3")
 music = pygame.mixer.music.load("sounds/Ethiopian_Patriotic.mp3")
 pygame.mixer.music.play(-1)
-pygame.mixer.music.set_volume(0.6)
+pygame.mixer.music.set_volume(0.4)
 
 class player():
     def __init__(self, x, y, width, height):
@@ -137,6 +137,26 @@ class enemy():
         else:
             self.visible = False
 
+def draw_splash_screen():
+    splash_text = font.render("Welcome to Arbegna!", True, (255, 255, 255))
+    bg_img2 = pygame.image.load("./images/cover.png")
+    bg_img2 = pygame.transform.scale(bg_img2, (w_width, w_height))
+    screen.blit(bg_img2, (0, 0))
+    screen.blit(splash_text, (w_width // 2 - splash_text.get_width() // 2, w_height // 2 - splash_text.get_height() // 2))
+    pygame.display.update()
+    pygame.time.delay(1000)
+    
+def draw_game_over():
+    pygame.mixer.music.set_volume(0)
+    splash_text = font.render("Game Over", True, (255, 255, 255))
+    bg_img2 = pygame.image.load("./images/Group 1.png")
+    bg_img2 = pygame.transform.scale(bg_img2, (w_width, w_height))
+    screen.blit(bg_img2, (0, 0))
+    screen.blit(splash_text, (w_width // 2 - splash_text.get_width() // 2, w_height // 2 - splash_text.get_height() // 2))
+    pygame.display.update()
+    pygame.time.delay(1000)
+    
+
 def DrawInGameloop():
     screen.blit(bg_img, (0, 0))
     clock.tick(25)
@@ -159,11 +179,22 @@ last_spawn_time = pygame.time.get_ticks()
 spawn_rate_multiplier = 1  
 next_double_time = pygame.time.get_ticks() + 30000 
 
+current_state = "splash"
+splash_duration = 1000
+
+splash_start_time = pygame.time.get_ticks()
+
 done = True
 while done:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             done = False
+    
+    if current_state == "splash":
+        draw_splash_screen()
+        
+        if pygame.time.get_ticks()-splash_start_time > splash_duration:
+            current_state = "main_menu"
 
     current_time = pygame.time.get_ticks()
     if current_time - last_spawn_time >= enemy_spawn_time:
@@ -184,7 +215,7 @@ while done:
                 soldier.damage_taken = 0  
 
             if soldier.health <= 0:
-                print("Soldier is dead!")
+                draw_game_over()
                 done = False  
                 
     if shoot > 0:
