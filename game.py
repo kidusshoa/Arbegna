@@ -246,7 +246,7 @@ while done:
         bulletsound.play()
         direction = 1 if soldier.right else -1
         if len(bullets) < 5:
-            bullets.append(projectile((soldier.x + soldier.width // 2), (soldier.y + soldier.height // 2), 6, "black", direction))
+            bullets.append(projectile((soldier.x + soldier.width // 2), (soldier.y + soldier.height // 2), 6, "firebrick1", direction))
         shoot = 1
     if keys[pygame.K_LEFT] and soldier.x > 0:
         soldier.x -= soldier.vel
